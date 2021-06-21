@@ -1,16 +1,19 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { AuthProvider } from "../context/auth.context";
+import { useState } from "react";
+import { useEffect } from "react";
 
 function MyApp({ Component, pageProps }: AppProps) {
-	let user: User | null;
+	const [user, setUser] = useState<User | null>(null);
 
-	const sessionUser = sessionStorage.getItem("user");
-	if (sessionUser) {
-		user = JSON.parse(sessionUser);
-	} else {
-		user = null;
-	}
+	useEffect(() => {
+		const sessionUser = sessionStorage.getItem("user");
+		if (sessionUser) {
+			setUser(JSON.parse(sessionUser));
+		}
+	}, [])
+	
 
 	return (
 		<AuthProvider user={user}>

@@ -2,6 +2,7 @@ import { Button } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import React, { useState } from "react";
 import { CssTextField } from "../components";
+import axios from "axios";
 
 export default function Login() {
 	const [formData, setFormData] = useState({
@@ -17,11 +18,22 @@ export default function Login() {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		const res = await axios.post("/api/login", {
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(formData)
+		});
+		console.log(res);
+	}
+
 	return (
 		<div className={classes.root}>
 			<main>
 				<p className={classes.text}>Sign in to panel</p>
-				<form className={classes.form}>
+				<form className={classes.form} onSubmit={handleSubmit}>
 					<CssTextField
 						label="email"
 						type="email"
@@ -52,7 +64,7 @@ export default function Login() {
 							className: classes.inputInner,
 						}}
 					/>
-					<Button variant="contained" className={classes.signIn}>
+					<Button variant="contained" className={classes.signIn} type="submit">
 						Sign in
 					</Button>
 				</form>
