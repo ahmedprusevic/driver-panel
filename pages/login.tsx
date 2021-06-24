@@ -20,14 +20,9 @@ export default function Login() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const res = await axios.post("/api/login", {
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(formData)
-		});
+		const res = await axios.post("/api/login", formData);
 		console.log(res);
-	}
+	};
 
 	return (
 		<div className={classes.root}>
