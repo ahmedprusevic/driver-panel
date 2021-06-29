@@ -2,15 +2,18 @@ import { Button } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import React, { useState } from "react";
 import { CssTextField } from "../components";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { useAuth } from "../context/auth.context";
+import { useRouter } from "next/router";
 
 export default function Login() {
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
 	});
-
+	const { setCurrentUser } = useAuth();
 	const classes = useStyles();
+	const router = useRouter();
 
 	const { email, password } = formData;
 
@@ -20,8 +23,11 @@ export default function Login() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		const res = await axios.post("/api/login", formData);
-		console.log(res);
+		const res: AxiosResponse = await axios.post("/api/login", formData);
+		sessionStorage.setItem("user", JSON.stringify(res.data.user));
+		sessionStorage.setItem("token", res.data.token);
+		setCurrentUser(res.data.user);
+		router.push("/");
 	};
 
 	return (

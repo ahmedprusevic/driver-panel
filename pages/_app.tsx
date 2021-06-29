@@ -1,22 +1,21 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
-import { AuthProvider } from "../context/auth.context";
-import { useState } from "react";
+import { AuthProvider, useAuth } from "../context/auth.context";
 import { useEffect } from "react";
+import api from "../services/api";
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const [user, setUser] = useState<User | null>(null);
+	const { currentUser } = useAuth();
 
 	useEffect(() => {
-		const sessionUser = sessionStorage.getItem("user");
-		if (sessionUser) {
-			setUser(JSON.parse(sessionUser));
+		const token = sessionStorage.token;
+		if (token) {
+			api.setToken(token);
 		}
-	}, [])
-	
+	}, []);
 
 	return (
-		<AuthProvider user={user}>
+		<AuthProvider user={currentUser}>
 			<Component {...pageProps} />
 			<style global jsx>{`
 				html,

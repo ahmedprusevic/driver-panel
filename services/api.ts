@@ -1,28 +1,42 @@
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 class Api {
-	api?: string;
+	api: AxiosInstance;
 
 	constructor() {
-		this.api = process.env.API_LINK;
+		this.api = axios.create({
+			baseURL: process.env.API_LINK,
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
 	}
 
-	getDefaultHeaders = () => {
-		return {
-			"Content-Type": "application/json",
-		};
+	setToken = (token: string) => {
+		this.api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 	};
 
 	login = async (formData: LoginFormData) => {
-		const res: AxiosResponse = await axios.post(`${this.api}/auth/login`, {
-			headers: this.getDefaultHeaders(),
-			body: formData,
-		});
-		// console.log("resAPI", res);
+		try {
+			const res: AxiosResponse<string> = await this.api.post(
+				"/auth/login",
+				formData
+			);
 
-		if (res.status === 200) return res.data;
+			this.setToken(res.data);
+			return res.data;
+		} catch (err) {
+			console.error(err);
+		}
+	};
 
-		return Promise.reject(res);
+	getUser = async () => {
+		try {
+			const res: AxiosResponse<User> = await this.api.get("/auth/user");
+			return res.data;
+		} catch (err) {
+			console.error(err);
+		}
 	};
 }
 
