@@ -10,6 +10,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 	} catch (err) {
 		console.error(err);
-		res.status(500);
+		res.status(400).json({ message: err.message });
 	}
 };

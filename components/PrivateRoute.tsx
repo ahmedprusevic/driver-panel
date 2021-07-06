@@ -1,10 +1,9 @@
 import React from "react";
-import { useAuth } from "../context/auth.context";
+import { AuthCookie, useAuth } from "../context/auth.context";
 import Login from "../pages/login";
-import { NextPage } from 'next'
+import { NextPage } from "next";
 
-
-export function withAuth(Component: NextPage){
+export function withAuth(Component: NextPage) {
 	const Auth = (props: any) => {
 		const { currentUser } = useAuth();
 
@@ -15,9 +14,18 @@ export function withAuth(Component: NextPage){
 		return <Component {...props} />;
 	};
 
-	if (Component.getInitialProps) {
-		Auth.getInitialProps = Component.getInitialProps;
-	  }
+	Auth.getInitialProps = async (ctx: any) => {
+		const token = AuthCookie(ctx);
 
-	  return Auth;
-};
+		const componentProps =
+			Component.getInitialProps && (await Component.getInitialProps(ctx));
+
+		return { ...componentProps, token };
+	};
+
+	// if (Component.getInitialProps) {
+	// 	Auth.getInitialProps = Component.getInitialProps;
+	//   }
+
+	return Auth;
+}
