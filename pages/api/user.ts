@@ -3,15 +3,13 @@ import api from '../../services/api';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const token = await api.login(req.body);
     const user: User | null = await api.getUser();
+    console.log('USER', user);
     if (user) {
-      console.log('usr login', user);
-      res.status(200).json({ user, token });
+      res.status(200).json({ user });
       return;
     }
-
-    res.status(200).end();
+    res.status(500).end();
   } catch (err) {
     console.error(err);
     res.status(400).json({ message: err.message });
