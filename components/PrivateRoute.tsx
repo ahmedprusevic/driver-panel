@@ -1,42 +1,43 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { AuthCookie, useAuth } from '../context/auth.context';
-import Login from '../pages/login';
-import { NextPage } from 'next';
+import { NextPage, NextPageContext } from 'next';
 import api from '../services/api';
-import axios from 'axios';
 import Router from 'next/router';
+import { useEffect } from 'react';
+import axios, { AxiosResponse } from 'axios';
 
-export function withAuth(Component: NextPage) {
+export function withAuth(Component: NextPage<any>) {
   const Auth = (props: any) => {
     const { currentUser, setCurrentUser } = useAuth();
 
     const fetchUser = async (token: string) => {
       api.setToken(token);
       try {
-        const res = await axios.get(`http://localhost:3000/api/user`);
-        console.log(res);
+        const res: AxiosResponse<User> = await axios.get('/api/user');
+        //@ts-ignore
+        console.log('ress data', res.data);
         if (res.data) {
-          setCurrentUser(res.data.user);
+          setCurrentUser(res.data);
         }
       } catch (err) {
         console.error(err);
       }
     };
 
-    console.log(props);
-
     if (!currentUser && !props.token) {
-      return <Login />;
+      Router.push('/login');
     }
 
-    if (props.token !== 'undefined' && !currentUser) {
-      fetchUser(props.token);
-    }
+    useEffect(() => {
+      if (!currentUser && props.token) {
+        fetchUser(props.token);
+      }
+    }, []);
 
     return <Component {...props} />;
   };
 
-  Auth.getInitialProps = async (ctx: any) => {
+  Auth.getInitialProps = async (ctx: NextPageContext) => {
     const token = AuthCookie(ctx);
 
     const componentProps =
@@ -44,10 +45,6 @@ export function withAuth(Component: NextPage) {
 
     return { ...componentProps, token };
   };
-
-  // if (Component.getInitialProps) {
-  // 	Auth.getInitialProps = Component.getInitialProps;
-  //   }
 
   return Auth;
 }

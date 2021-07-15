@@ -39,6 +39,15 @@ class Api {
       return null;
     }
   };
+
+  getQuestions = async () => {
+    try {
+      const res: AxiosResponse<Question[]> = await this.api.get('/questions');
+      return res.data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
 }
 
 const api = new Api();

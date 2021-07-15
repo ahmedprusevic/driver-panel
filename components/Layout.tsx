@@ -22,7 +22,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import QuestionAnswerIcon from '@material-ui/icons/QuestionAnswer';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import { useAuth } from '../context/auth.context';
+import Link from 'next/link';
 
 const drawerWidth = 240;
 
@@ -98,25 +101,22 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           <Divider />
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
+            <Link href="/questions">
+              <ListItem button>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <QuestionAnswerIcon />
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary="Pitanja" />
               </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
+            </Link>
+            <Link href="/tests">
+              <ListItem button>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  <AssignmentIcon />
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemText primary="Testovi" />
               </ListItem>
-            ))}
+            </Link>
           </List>
         </Drawer>
       )}
