@@ -30,8 +30,12 @@ class Api {
     }
   };
 
-  getUser = async () => {
+  getUser = async (token?: string) => {
     try {
+      if (token) {
+        this.api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      }
+
       const res: AxiosResponse<User> = await this.api.get('/auth/user');
       return res.data;
     } catch (err) {
@@ -42,7 +46,9 @@ class Api {
 
   getQuestions = async () => {
     try {
+      // console.log('uslo');
       const res: AxiosResponse<Question[]> = await this.api.get('/questions');
+      // console.log('Response', res);
       return res.data;
     } catch (err) {
       console.error(err);

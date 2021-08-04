@@ -13,9 +13,11 @@ export function withAuth(Component: NextPage<any>) {
     const fetchUser = async (token: string) => {
       api.setToken(token);
       try {
-        const res: AxiosResponse<User> = await axios.get('/api/user');
-        //@ts-ignore
-        console.log('ress data', res.data);
+        const res: AxiosResponse<User> = await axios.get('/api/user', {
+          headers: {
+            Authorization: `${token} `,
+          },
+        });
         if (res.data) {
           setCurrentUser(res.data);
         }

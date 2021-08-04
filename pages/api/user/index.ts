@@ -3,7 +3,7 @@ import api from '../../../services/api';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const user: User | null = await api.getUser();
+    const user: User | null = await api.getUser(req.headers.authorization);
     if (user) {
       res.status(200).json(user);
       return;

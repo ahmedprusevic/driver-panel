@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import { NextPageContext } from 'next';
 import React from 'react';
 import { withAuth } from '../components';
 import api from '../services/api';
@@ -8,13 +7,15 @@ type QuestionProps = {
   questions: Question[];
 };
 
-const Questions = ({ questions }: QuestionProps) => {
-  console.log('questions from component', questions);
+const Questions = (props: QuestionProps) => {
+  // @ts-ignore
+  console.log('questions from component', props.props.questions);
   return <div></div>;
 };
 
-export async function getInitialProps(ctx: NextPageContext) {
+Questions.getInitialProps = async function getInitialProps() {
   const questions: Question[] | undefined = await api.getQuestions();
+  // console.log('questions', questions);
   if (!questions) {
     return {
       notFound: true,
@@ -24,6 +25,6 @@ export async function getInitialProps(ctx: NextPageContext) {
   return {
     props: { questions },
   };
-}
+};
 
 export default withAuth(Questions);
